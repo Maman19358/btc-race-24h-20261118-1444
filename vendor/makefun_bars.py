@@ -366,13 +366,13 @@ def run(on_batch, on_hello=None, on_done=None, *, input=None, output=None):
             shaped = type(seq) is int and seq == state.seq + 1 and isinstance(account, dict) and isinstance(account.get("positions"), list)
             if kind == "done":
                 if not shaped:
-                    raise ProtocolError(f"input line {line_no}: malformed done (seq {_describe(seq)}) after batch {state.seq})")
+                    raise ProtocolError(f"input line {line_no}: malformed done (seq {_describe(seq)} after batch {state.seq})")
                 state.apply_done(msg)
                 if on_done is not None:
                     on_done(state, msg)
                 return RunResult(state, msg, msg["seq"])
             if not (shaped and type(msg.get("t")) is int and isinstance(msg.get("bars"), list) and isinstance(msg.get("fills"), list)):
-                raise ProtocolError(f"input line {line_no}: malformed batch (seq {_describe(seq)}) after {state.seq})")
+                raise ProtocolError(f"input line {line_no}: malformed batch (seq {_describe(seq)} after {state.seq})")
             state.apply_batch(msg)
             orders = state.to_orders(on_batch(state, msg))
             text = encode_reply(msg["seq"], orders)
